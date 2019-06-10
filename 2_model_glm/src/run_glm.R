@@ -1,5 +1,5 @@
 
-run_simulation <- function(config_path, meteo_file, driver_data){
+run_simulation <- function(config_path, orig_meteo_file, meteo_file, meteo_dir){
 
 
   sim_dir <- '.sim_raw'
@@ -12,7 +12,7 @@ run_simulation <- function(config_path, meteo_file, driver_data){
 
 
   write_nml(glm_nml = nml, file = nml_sim_path)
-  drivers <- feather::read_feather(driver_data)
+  drivers <- read.csv(file.path(meteo_dir, orig_meteo_file))
 
   write.csv(drivers, file = meteopath, row.names=FALSE, quote=FALSE)
   run_glm(sim_dir)
