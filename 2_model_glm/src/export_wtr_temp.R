@@ -14,7 +14,6 @@ export_shortwave <- function(outfile, simout){
   feather::write_feather(tmp_data, outfile)
 }
 
-Joe
 export_energy <- function(outfile, simout){
 
   energy_data <- get_internal_energy(simout$ncpath)
