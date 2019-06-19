@@ -119,14 +119,14 @@ for(i in 1:n_params){
 #   3) Update Y vector with Kalman gain
 #   4) Update GLM state and parameters with updated Y vector
 
-for(t in 2:length(time)){
-  print(t)
+for(t in 2:nStep){
+  print(paste('time step', t))
 
   cur_start = sim_times[t - 1]
   cur_stop = sim_times[t + 1]
 
   for(i in 1:nEn){
-    print(i)
+    print(paste('ensemble', i))
     # update the nml file with previous time step's information
     cur_states = Y$states[, i, t-1]
     cur_params = Y$params[, i, t-1]
@@ -155,16 +155,26 @@ for(t in 2:length(time)){
     # run the simulation for given ensemble
     run_glm(sim_folder = sim_dir)
 
-    glmtools::get_temp(file.path(sim_dir, 'output.nc'))
+    temps_mod = glmtools::get_temp(file.path(sim_dir, 'output.nc'), reference = 'surface', z_out = state_temp_depths)
 
     # update Y vector with sim output
+
+    Y$states[, i, t] = as.matrix(temps_mod[as.Date(temps_mod$DateTime) == as.Date(sim_times[t]), 2:ncol(temps_mod)])
+    # Y$params[, i, t] =
+    Y$params[, i, t] = as.matrix(Y$params[, i, t-1])
 
 
 
     # check if there are observations to compare to
 
+
+    # update states and parameters
+
+
   }
 }
+
+# visualize output
 
 
 
