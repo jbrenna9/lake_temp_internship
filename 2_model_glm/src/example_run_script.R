@@ -29,11 +29,17 @@ EnStep <- function()
 sim_out = run_simulation(config_path = 'mod_nml',
                          orig_meteo_file = 'mendota_driver_data.csv',
                          meteo_file = sprintf('%s_meteo.csv', nhd_id),
-                         meteo_dir = '1_data/in',
-                         start = '2010-04-01 24:00:00',
-                         stop = '2010-04-03 00:00:00',
-                         add_rain = add_rain,
-                         burnin_years = burnin_years)
+                         meteo_dir = '1_data/in')
+
+# sim_out = run_simulation(config_path = '2_model_glm/cfg/Mendota_glm_config.txt',
+#                          orig_meteo_file = 'mendota_driver_data.csv',
+#                          meteo_file = sprintf('%s_meteo.csv', nhd_id),
+#                          meteo_dir = '1_data/in',
+#                          start = start,
+#                          stop = stop,
+#                          add_rain = add_rain,
+#                          burnin_years = burnin_years)
+
 
 glmtools::plot_temp(sim_out$ncpath)
 
