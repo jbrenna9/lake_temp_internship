@@ -1,0 +1,26 @@
+target_default: all
+
+packages:
+  - glmtools
+
+include:
+  - 1_data.yml
+
+sources:
+  - 2_model_glm/src/run_glm.R
+
+targets:
+  -
+
+  start:
+    command: I('') #specify arguments
+
+  nml_file:
+    command: mod_nml('.sim_raw/glm2.nml', 'stop', '1995-12-30 00:00:00')
+
+  run_sim:
+    command: run_simulation(config_path = 'glm_nml',
+                         orig_meteo_file = 'mendota_driver_data.csv',
+                         meteo_file = sprintf('%s_meteo.csv', nhd_id),
+                         meteo_dir = '1_data/in')
+
