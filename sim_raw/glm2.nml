@@ -5,8 +5,8 @@
    min_layer_thick = 0.2
    max_layer_thick = 1.5
    Kw = 0.457501
-   coef_mix_conv = 0.153767
-   coef_wind_stir = 0.3275739
+   coef_mix_conv = 0.2
+   coef_wind_stir = 0.23
    coef_mix_shear = 0.2
    coef_mix_turb = 0.51
    coef_mix_KH = 0.3
@@ -24,7 +24,7 @@
 /
 &time
    timefmt = 2
-   start = '2010-09-29'
+   start = '2008-09-30'
    stop = '2010-10-01'
    dt = 3600
    timezone = 7
@@ -49,7 +49,7 @@
    lake_depth = 25.2984
    num_depths = 9
    the_depths = 1, 2, 4, 6, 8, 10, 12, 16, 20
-   the_temps = 9.32368137910192, 9.32368137910192, 9.32368137910192, 9.32368137910192, 9.32368137910192, 9.32368137910192, 9.32368137910192, 9.32368137910192, 9.32368137910192
+   the_temps = 29.1431508342172, 29.1427408823996, 28.9310780708788, 28.7026079198552, 23.1038939621723, 16.7996056281367, 15.4216620921071, 14.0851370185025, 13.3536021822036
    the_sals = 0, 0, 0, 0, 0, 0, 0, 0, 0
    num_wq_vars = 6
    wq_names = 'OGM_don','OGM_pon','OGM_dop','OGM_pop','OGM_doc','OGM_poc'
@@ -67,14 +67,14 @@
    subdaily = .false.
    meteo_fl = 'nhd_13293262_meteo.csv'
    wind_factor = 1
-   sw_factor = 0.9242721
+   sw_factor = 1
    lw_factor = 1
-   at_factor = 1.000068
-   rh_factor = 1.0272
+   at_factor = 1
+   rh_factor = 1
    rain_factor = 1
-   ce = 0.002249765
-   ch = 0.0007430524
-   cd = 0.002970628
+   ce = 0.0013
+   ch = 0.0013
+   cd = 0.0013
    rain_threshold = 0.01
    runoff_coef = 0.3
 /

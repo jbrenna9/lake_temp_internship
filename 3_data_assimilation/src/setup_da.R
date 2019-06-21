@@ -14,10 +14,11 @@ stop = '2010-10-01'
 obs_file_path = '1_data/in/mendota_temp_obs.csv'
 driver_file_path = '1_data/in/mendota_driver_data.csv'
 orig_nml_path = '2_model_glm/cfg/Mendota_glm_config.txt'
-sim_dir = '.sim_raw'
+sim_dir = 'sim_raw'
 meteo_file = 'nhd_13293262_meteo.csv'
+hist_days = 365*2 # "spin-up" days
 
-nEn = 100 # number of ensembles
+nEn = 1 # number of ensembles
 
 ################################################################
 # set up initial conditions; make draws for parameters, states,
@@ -33,7 +34,7 @@ params = dplyr::tibble(param = c('cd', 'ce', 'ch', 'coef_wind_stir', 'coef_mix_c
 init_params = lapply(params$param, function(param, mean, min, max){
   pdf = abs(rnorm(n = nEn,
               mean = params$mean[params$param == param],
-              sd = (params$max[params$param == param] - params$min[params$param == param]) / 5)) # (max - min) / 5 is approximately equal to SD
+              sd = 0))#(params$max[params$param == param] - params$min[params$param == param]) / 5)) # (max - min) / 5 is approximately equal to SD
 }) %>% dplyr::bind_cols() %>% 'colnames<-'(params$param)
 
 
@@ -45,7 +46,7 @@ temp_obs = read.csv(obs_file_path, stringsAsFactors = F) %>%
 
 start = as.character(min(as.Date(temp_obs$DateTime))) # new start time based on earliest temp observation
 nStep = as.numeric(as.difftime(as.POSIXct(stop) - as.POSIXct(start), units = 'days')) # model time steps
-sim_times = as.character(seq.Date(as.Date(start), as.Date(stop), by = 'days'))
+sim_times = as.character(seq.Date(as.Date(start)-hist_days, as.Date(stop), by = 'days'))
 
 # pulling out initial temperatures and depths based on observations
 init_temp_obs = temp_obs$temp[temp_obs$DateTime == start]
@@ -80,7 +81,7 @@ file.copy(from = orig_nml_path, to = sim_nml, overwrite = TRUE) # copying over o
 # glmtools::write_nml(glm_nml = nml, file = sim_nml) #write out modified nml
 #
 # run_glm(sim_dir)
-# glmtools::plot_temp('.sim_raw/output.nc')
+# glmtools::plot_temp('sim_raw/output.nc')
 #####################################################################################
 
 
@@ -120,13 +121,12 @@ for(i in 1:n_params){
 #   4) Update GLM state and parameters with updated Y vector
 
 for(t in 2:nStep){
-  print(paste('time step', t))
 
-  cur_start = sim_times[t - 1]
-  cur_stop = sim_times[t + 1]
+  cur_start = sim_times[t]
+  cur_stop = sim_times[t + hist_days + 1]
 
   for(i in 1:nEn){
-    print(paste('ensemble', i))
+    print(c(paste('time step', t, ','), paste('ensemble', i)))
     # update the nml file with previous time step's information
     cur_states = Y$states[, i, t-1]
     cur_params = Y$params[, i, t-1]
@@ -159,7 +159,7 @@ for(t in 2:nStep){
 
     # update Y vector with sim output
 
-    Y$states[, i, t] = as.matrix(temps_mod[as.Date(temps_mod$DateTime) == as.Date(sim_times[t]), 2:ncol(temps_mod)])
+    Y$states[, i, t] = as.matrix(temps_mod[as.Date(temps_mod$DateTime) == as.Date(sim_times[t+hist_days]), 2:ncol(temps_mod)])
     # Y$params[, i, t] =
     Y$params[, i, t] = as.matrix(Y$params[, i, t-1])
 
@@ -175,6 +175,13 @@ for(t in 2:nStep){
 }
 
 # visualize output
+plot(Y$states[,1,], type= 'l' , lwd=0, col ='white' ,ylim = c(min(Y$states[,,]),max(Y$states[,,])))
+for(d in 1:9){
+  for(m in 1:nEn){
+    lines(Y$states[d,m,], type= 'l' )
+  }
+}
+
 
 
 
