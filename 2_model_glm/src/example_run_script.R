@@ -6,15 +6,6 @@ source('2_model_glm/src/run_glm.R') # sourcing function for running glm simulati
 
 nhd_id = 'nhd_13293262' # Lake Mendota's nhd ID
 
-##mod_nml <- function(nml, start_v, stop_v){
-##  glm_nml <- read_nml(file.path(nml))
-##  glm_nml <- set_nml(glm_nml, 'start', start_v)
-##  glm_nml <- set_nml(glm_nml, 'stop', stop_v )
-##  write_nml(glm_nml, file = nml_file)
-##}
-
-#mod_nml('.sim_raw/glm2.nml', '1995-12-29 24:00:00', '1995-12-31 00:00:00')
-
 
 start = '2010-04-01' #start of simulation
 stop = '2011-10-01' # end of simulation
@@ -25,20 +16,15 @@ sim_param_list <- list('start' = '1979-01-02 24:00:00','stop' = '1979-01-04 00:0
 
 EnStep <- function()
 
-
-sim_out = run_simulation(config_path = 'mod_nml',
+glm_nml <- set_nml(glm_nml, arg_list = list('start' = '1979-01-02 24:00:00','stop' = '1980-12-04 00:00:00'))
+write_nml(glm_nml, file = 'sim_raw/glm2.nml')
+sim_out = run_simulation(config_path = 'glm_nml',
                          orig_meteo_file = 'mendota_driver_data.csv',
                          meteo_file = sprintf('%s_meteo.csv', nhd_id),
                          meteo_dir = '1_data/in')
 
-# sim_out = run_simulation(config_path = '2_model_glm/cfg/Mendota_glm_config.txt',
-#                          orig_meteo_file = 'mendota_driver_data.csv',
-#                          meteo_file = sprintf('%s_meteo.csv', nhd_id),
-#                          meteo_dir = '1_data/in',
-#                          start = start,
-#                          stop = stop,
-#                          add_rain = add_rain,
-#                          burnin_years = burnin_years)
+
+nc_file <- file.path('sim_raw', 'output.nc')
 
 
 glmtools::plot_temp(sim_out$ncpath)
@@ -51,7 +37,7 @@ temp_rmse <- compare_to_field(sim_out$ncpath, field_file,
 thermo <- compare_to_field(sim_out$ncpath, field_file,
                               metric = 'ShortWave', as_value = TRUE)
 
-temp <- resample_to_field(nc_file = '.sim_raw/output.nc', field_file = '1_data/in/mendota_temp_obs.csv')
+temp <- resample_to_field(nc_file = 'sim_raw/output.nc', field_file = '1_data/in/mendota_temp_obs.csv')
 
 
 #'glm_nml <- read_nml()

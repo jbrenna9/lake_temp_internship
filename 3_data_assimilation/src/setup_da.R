@@ -4,6 +4,7 @@
 # set up for ensembles
 nEn = 100 # number of ensembles
 nStep = as.numeric(as.difftime(as.POSIXct(stop) - as.POSIXct(start), units = 'days')) # model time steps
+nStep=100
 
 
 # set up initial conditions; make draws for parameters, states,
