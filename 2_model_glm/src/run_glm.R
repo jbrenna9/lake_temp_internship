@@ -1,7 +1,7 @@
 run_simulation <- function(config_path, orig_meteo_file, meteo_file, meteo_dir){
 
 
-  sim_dir <- '.sim_raw'
+  sim_dir <- 'sim_raw'
   nml_sim_path <- file.path(sim_dir, 'glm2.nml')
   file.copy(from = config_path, to = nml_sim_path, overwrite = TRUE)
   nml <- read_nml(nml_sim_path)
